@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Usuarios";
+}
+
+
+
+    <table class="display cell-border" id="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Accciones :</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Usuario</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="txtemail" >
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="exampleFormControlInput1" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="txtnombre">
+                    </div>
+
+
+
+                </div>
+
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-su" onclick="Guardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts{
+    <script>
+
+        var tabladata;
+
+       
+        tabladata = $("#table").DataTable({
+            responsive: false,
+            ordering: false,
+            "ajax": {
+                url: '@Url.Action("ListarUsuarios", "Home")',
+                type: "GET",
+                dataType:"json"
+            },
+
+            "columns": [
+                { "data": "IdUsuario" },
+                { "data": "Name" },
+                { "data": "Email" },
+                {
+                    "defaultContent": '<button type ="button"  class ="btn btn-primary btn-sm btn-editar" > <i class="fas fa-pen"></i>  </button>' +
+                        '<button type ="button"  class ="btn btn-danger" > <i class ="fas fa-trash"></button>'
+                }
+            ]
+        })
+
+
+        function AbrirModal(json) {
+
+            if (json != null) {
+                $("#txtnombre").val(json.Name)
+                $("#txtemail").val(json.Email)
+            }
+
+
+            $("#FormModal").modal("show");
+        }
+
+        $('#table tbody').on("click", '.btn-editar', function () {
+            var filaSeleccionada = tabladata.row($(this).closest('tr')).index();
+           
+            var data = tabladata.row(filaSeleccionada).data();
+
+            AbrirModal(data)
+        })
+
+
+
+
+        function Guardar()
+        {
+            var usuario =
+            {
+                Name: $("#txtnombre").val(),
+                Email: $("#txtemail").val(),
+            }
+        }
+
+
+
+       
+    </script>
+}
